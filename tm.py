@@ -9,10 +9,12 @@ import os
 import sys
 import datetime
 import time
+import math
 import pdb
 
 # --- Define constants --- 
 LUNCH_DURATION = datetime.timedelta(minutes=45)
+WORKING_HOURS = datetime.timedelta(hours=8, minutes=30)
 
 def _sessionFromSessionLine(sessionLine):
 	session = {}
@@ -35,9 +37,23 @@ def _workingTimeFromSession(session):
 	date_ci = _strToTime(session['ci']) 
 	date_co = _strToTime(session['co'])
 	timeWorked = date_co - date_ci - LUNCH_DURATION 
-	hours, remainder = divmod(timeWorked.seconds, 3600)
-	minutes, seconds = divmod(remainder, 60)
-        return "%dh%02d" % (hours, minutes) 
+	return timeWorked 
+
+def _timedeltaToStr(timedelta):
+	seconds = math.fabs(timedelta.total_seconds())
+		
+	hours, remainder = divmod(seconds, 3600)
+	minutes = math.floor(remainder/60)
+	if (timedelta < datetime.timedelta(0)):
+		signStr = "-"
+	else:
+		signStr = ""
+	return signStr+"%d:%02d" % (hours, minutes)
+
+def _overtimeFromTimeWorked(timeWorked):
+	if(timeWorked >= WORKING_HOURS):
+		return timeWorked-WORKING_HOURS
+	return datetime.timedelta(0)
 
 def timeStr():
 	return datetime.datetime.now().strftime("%G%m%d/%H-%M-%S")
@@ -85,7 +101,12 @@ class SessionsDict(object):
 		self.sessions[-1]['co'] = _timeToStr(currentDate)
                 
 		print("Logged check-out at " + self.sessions[-1]['co'])
-		print("Total working time today: " + _workingTimeFromSession(self.sessions[-1]))
+		timeWorked = _workingTimeFromSession(self.sessions[-1])
+		print("Total working time today: " 
+				+ _timedeltaToStr(timeWorked))
+		overtime = _overtimeFromTimeWorked(timeWorked)
+		if (overtime > datetime.timedelta(0)):
+			print("You made " + _timedeltaToStr(overtime) + " of overtime today")
 
 	def write(self):
 		try:
