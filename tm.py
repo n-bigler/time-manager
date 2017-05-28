@@ -60,28 +60,30 @@ class SessionsDict(object):
 						self.sessions.append(_sessionFromSessionLine(l))
 			except:
 				print(sys.exc_info()[0])
-
-	def log(self, holiday=False):
+		
+	def log(self, special_days={'holiday':False, 'half_day':False}):
 		if not self.sessions:
-			self.logCI(holiday)
+			self.logCI()
 		else:
 			if 'co' not in self.sessions[-1]:
-				self.logCO(holiday)
+				self.logCO()
 			else:
-				self.logCI(holiday)
+				self.logCI()
 
-	def logCI(self, holiday=False):
+		# adds modifiers
+		for  key,value in special_days.items():
+			if (value):
+				self.sessions[-1][key]='true'
+
+	def logCI(self):
 		currentDate = datetime.datetime.now()
 		self.sessions.append({'ci': _timeToStr(currentDate)})
-		if(holiday):
-			self.sessions[-1]['holiday']='true'
 		print("Logged check-in at "+ self.sessions[-1]['ci'])
 
-	def logCO(self, holiday=False):
+	def logCO(self):
 		currentDate = datetime.datetime.now()
 		self.sessions[-1]['co'] = _timeToStr(currentDate)
-		if (holiday): 
-			self.sessions[-1]['holiday']='true'
+                
 		print("Logged check-out at " + self.sessions[-1]['co'])
 		print("Total working time today: " + _workingTimeFromSession(self.sessions[-1]))
 
@@ -98,12 +100,13 @@ def main(arg):
 	parser = argparse.ArgumentParser(description='Time Manager')
 	parser.add_argument('--path', help="path to log file", required=True)
 	parser.add_argument('--holiday', help="when the day is actually a holiday",
-	action="store_true")
+            action="store_true")
+        parser.add_argument('--half-day', help="when working half a day",
+            action="store_true")
 	args = parser.parse_args()
-
 	path = args.path
 	sd = SessionsDict(path)
-	sd.log(args.holiday)
+	sd.log({'holiday':args.holiday, 'half-day':args.half_day})
 	sd.write()
 
 
