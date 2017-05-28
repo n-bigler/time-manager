@@ -11,6 +11,9 @@ import datetime
 import time
 import pdb
 
+# --- Define constants --- 
+LUNCH_DURATION = datetime.timedelta(minutes=45)
+
 def _sessionFromSessionLine(sessionLine):
 	session = {}
 	if sessionLine.strip().startswith('#'):
@@ -31,10 +34,10 @@ def _sessionLineFromSession(session):
 def _workingTimeFromSession(session):
 	date_ci = _strToTime(session['ci']) 
 	date_co = _strToTime(session['co'])
-	timeWorked = date_co - date_ci - datetime.timedelta(minutes=45)
+	timeWorked = date_co - date_ci - LUNCH_DURATION 
 	hours, remainder = divmod(timeWorked.seconds, 3600)
 	minutes, seconds = divmod(remainder, 60)
-	return str(hours)+"h"+str(minutes)
+        return "%dh%02d" % (hours, minutes) 
 
 def timeStr():
 	return datetime.datetime.now().strftime("%G%m%d/%H-%M-%S")
