@@ -1,0 +1,6 @@
+# compiled
+*.pyc
+
+# venv
+venv/
+
