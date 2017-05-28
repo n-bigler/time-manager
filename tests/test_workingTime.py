@@ -16,7 +16,8 @@ class TestTM(unittest.TestCase):
         t0 = datetime.datetime(2017, 05, 01, 8, 10)
         t8 = t0 + datetime.timedelta(hours=8)
         self.assertEqual(_workingTimeFromSession(
-            {'ci':_timeToStr(t0), 'co':_timeToStr(t8)}), '7h15') 
+            {'ci':_timeToStr(t0), 'co':_timeToStr(t8)}),
+			datetime.timedelta(hours=7, minutes=15)) 
 
 if __name__ == '__main__':
     unittest.main()
