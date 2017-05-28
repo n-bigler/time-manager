@@ -61,7 +61,7 @@ class SessionsDict(object):
 			except:
 				print(sys.exc_info()[0])
 		
-	def log(self, special_days={'holiday':False, 'half_day':False}):
+	def log(self, special_days):
 		if not self.sessions:
 			self.logCI()
 		else:
