@@ -128,7 +128,6 @@ class SessionsDict(object):
 				overtime += worked
 			else:
 				overtime += _overtimeFromTimeWorked(worked)	
-			print(_timedeltaToStr(overtime))
 		return overtime
 			
 
