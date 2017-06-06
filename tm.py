@@ -64,6 +64,11 @@ def _timeToStr(time):
 def _strToTime(string):
 	return datetime.datetime.strptime(string, "%Y%m%d/%H-%M-%S")
 
+def _isHoliday(session):
+	if ('holiday' in session and session['holiday'] == 'true'):
+		return True
+	return False
+
 class SessionsDict(object):
 	def __init__(self, path='./tm.txt'):
 		self.sessions = [] 
@@ -116,19 +121,38 @@ class SessionsDict(object):
 					f.write(s)
 		except:
 			print("hihi")
+	
+			
+	def totalOvertime(self):
+		overtime=datetime.timedelta(0)
+		for s in self.sessions:
+			worked = _workingTimeFromSession(s)
+			if _isHoliday(s):
+				overtime += worked
+			else:
+				overtime += _overtimeFromTimeWorked(worked)	
+		return overtime
+			
 
 def main(arg):
 	parser = argparse.ArgumentParser(description='Time Manager')
 	parser.add_argument('--path', help="path to log file", required=True)
 	parser.add_argument('--holiday', help="when the day is actually a holiday",
             action="store_true")
-        parser.add_argument('--half-day', help="when working half a day",
+	parser.add_argument('--half-day', help="when working half a day",
             action="store_true")
+	parser.add_argument('--overtime', help="compute overtime (does not check in or out)",
+			action="store_true")
 	args = parser.parse_args()
+
 	path = args.path
 	sd = SessionsDict(path)
-	sd.log({'holiday':args.holiday, 'half-day':args.half_day})
-	sd.write()
+	if (args.overtime):
+		ot = sd.totalOvertime()
+		print("Total overtime: " + _timedeltaToStr(ot))
+	else:	
+		sd.log({'holiday':args.holiday, 'half-day':args.half_day})
+		sd.write()
 
 
 if __name__ == '__main__':
