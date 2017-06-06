@@ -51,9 +51,7 @@ def _timedeltaToStr(timedelta):
 	return signStr+"%d:%02d" % (hours, minutes)
 
 def _overtimeFromTimeWorked(timeWorked):
-	if(timeWorked >= WORKING_HOURS):
-		return timeWorked-WORKING_HOURS
-	return datetime.timedelta(0)
+	return timeWorked-WORKING_HOURS
 
 def timeStr():
 	return datetime.datetime.now().strftime("%G%m%d/%H-%M-%S")
@@ -122,7 +120,6 @@ class SessionsDict(object):
 		except:
 			print("hihi")
 	
-			
 	def totalOvertime(self):
 		overtime=datetime.timedelta(0)
 		for s in self.sessions:
@@ -131,6 +128,7 @@ class SessionsDict(object):
 				overtime += worked
 			else:
 				overtime += _overtimeFromTimeWorked(worked)	
+			print(_timedeltaToStr(overtime))
 		return overtime
 			
 
