@@ -223,8 +223,9 @@ class SessionsDict(object):
 				for session in self.sessions:
 					s = _sessionLineFromSession(session)
 					f.write(s)
-		except:
-			print("hihi")
+		except IOError as e:
+			print("Can't write to file.")
+			print(e.strerror)
 	
 	def totalOvertime(self):
 		overtime=datetime.timedelta(0)
