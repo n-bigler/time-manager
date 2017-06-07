@@ -16,6 +16,15 @@ import pdb
 LUNCH_DURATION = datetime.timedelta(minutes=45)
 WORKING_HOURS = datetime.timedelta(hours=8, minutes=30)
 
+class IncompleteSessionException(Exception):
+	""" Error handling the incomplete session case
+		
+		Will be raised whenever a session not containing both ci and co is 
+		passed to a function requiring a complete session.
+
+	"""
+	pass
+
 def _sessionFromSessionLine(sessionLine):
 	"""  Parse a session line into a session
 
@@ -72,6 +81,8 @@ def _workingTimeFromSession(session):
 	Returns:
 		datetime.timedelta: The time worked during the session
 	"""
+	if 'co' not in session or 'ci' not in session:
+		raise IncompleteSessionException
 
 	date_ci = _strToTime(session['ci']) 
 	date_co = _strToTime(session['co'])
@@ -218,7 +229,13 @@ class SessionsDict(object):
 	def totalOvertime(self):
 		overtime=datetime.timedelta(0)
 		for s in self.sessions:
-			worked = _workingTimeFromSession(s)
+			try:
+				worked = _workingTimeFromSession(s)
+			except IncompleteSessionException:
+				worked = WORKING_HOURS 
+				pass
+			except Exception as e:
+				print(e.strerror)
 			if _isHoliday(s):
 				overtime += worked
 			else:
