@@ -1,6 +1,6 @@
 # time-manager
 
-Simple working time logger.
+A simple command line working-time logger.
 
 ## Installation
 
