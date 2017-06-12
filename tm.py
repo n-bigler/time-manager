@@ -215,6 +215,9 @@ class Session(object):
 			return True
 		return False
 
+	def addModifier(self, mod, val):
+		self.modifiers[mod]=val
+
 class SessionsDict(object):
 	def __init__(self, path='./tm.txt'):
 		self.sessions = [] 
@@ -241,7 +244,7 @@ class SessionsDict(object):
 		# adds modifiers
 		for  key,value in special_days.items():
 			if (value):
-				self.sessions[-1][key]='true'
+				self.sessions[-1].addModifier(key, 'true')
 
 	def logCI(self):
 		currentDate = datetime.datetime.now()
@@ -276,7 +279,6 @@ class SessionsDict(object):
 				worked = s.timeWorked()
 			except IncompleteSessionException:
 				worked = WORKING_HOURS 
-				pass
 			except Exception as e:
 				print(str(e))
 			if s.isModifier('holiday'):
