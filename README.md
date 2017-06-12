@@ -42,4 +42,4 @@ the expected worktime accordingly.
 
 By default, the script considers an expected worktime of 8 hours and 30 minutes
 per day and a lunch break of 45 minutes. You can tweak this by modifying the
-constants LUNCH_DURATION and WORKING_HOURS at the beginning of the code. 
+constants `LUNCH_DURATION` and `WORKING_HOURS` at the beginning of the code. 
