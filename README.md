@@ -13,7 +13,7 @@ $ git clone https://github.com/n-bigler/time-manager.git
 In your `.bashrc` add
 
 ```bash
-$ alias tm='python ~/path/to/time-manager/tm --path ~/path/to/logfile
+$ alias tm='python ~/path/to/time-manager/tm --path ~/path/to/logfile'
 ```
 
 ## Usage
