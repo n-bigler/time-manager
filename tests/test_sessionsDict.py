@@ -35,8 +35,8 @@ class TestTM(unittest.TestCase):
 		t1 = t0 + datetime.timedelta(hours=10, minutes=15)
 		t2 = t0 + datetime.timedelta(hours=8, minutes=15)
 		
-		sd.sessions.append(Session(_timeToStr(t0), _timeToStr(t1)))
-		sd.sessions.append(Session(_timeToStr(t0), _timeToStr(t2)))
+		sd.sessions.append(Session(t0, t1))
+		sd.sessions.append(Session(t0, t2))
 		self.assertEqual(sd.totalOvertime(), datetime.timedelta(0))
 
 if __name__ == '__main__':

@@ -149,9 +149,9 @@ class Session(object):
 			for piece in line.strip().split(','):
 				label, data = piece.split(':')
 				if label.strip() == 'co':
-					co = data.strip()
+					co = _strToTime(data.strip())
 				if label.strip() == 'ci':
-					ci = data.strip()
+					ci = _strToTime(data.strip())
 				modifiers[label.strip()] = data.strip()
 					
 		if ci is None:
@@ -178,8 +178,8 @@ class Session(object):
 		if self.co is None or self.ci is None: 
 			raise IncompleteSessionException
 	
-		date_ci = _strToTime(self.ci) 
-		date_co = _strToTime(self.co)
+		date_ci = self.ci 
+		date_co = self.co
 		timeWorked = date_co - date_ci - LUNCH_DURATION 
 		return timeWorked 
 
@@ -197,13 +197,13 @@ class Session(object):
 			str: A string representation of the session
 
 		"""
-		d = {'ci': self.ci}
+		d = {'ci': _timeToStr(self.ci)}
 
 		for k,v in self.modifiers.items():
 			d[k] = v
 			
 		if self.co is not None:
-			d['co'] = self.co
+			d['co'] = _timeToStr(self.co)
 
 		sessionLine = ""
 		meta = [m for m in d.items()]
@@ -248,14 +248,14 @@ class SessionsDict(object):
 
 	def logCI(self):
 		currentDate = datetime.datetime.now()
-		self.sessions.append(Session(ci=_timeToStr(currentDate)))
-		print("Logged check-in at "+ self.sessions[-1].ci)
+		self.sessions.append(Session(ci=currentDate))
+		print("Logged check-in at "+ _timeToStr(self.sessions[-1].ci))
 
 	def logCO(self):
 		currentDate = datetime.datetime.now()
-		self.sessions[-1].co = _timeToStr(currentDate)
+		self.sessions[-1].co = currentDate
                 
-		print("Logged check-out at " + self.sessions[-1].co)
+		print("Logged check-out at " + _timeToStr(self.sessions[-1].co))
 		timeWorked = self.sessions[-1].timeWorked()
 		print("Total working time today: " 
 				+ _timedeltaToStr(timeWorked))
